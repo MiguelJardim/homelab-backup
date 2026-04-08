@@ -1,0 +1,261 @@
+# Docker Compose Template
+# This template aggregates common patterns from all services in this homelab
+# Copy and customize as needed for new services
+
+# ============================================================================
+# BASIC SERVICE TEMPLATE (Most Common Pattern)
+# ============================================================================
+# Use this for simple services that need Caddy reverse proxy
+
+name: service-name  # Optional: project name
+
+services:
+  service-name:
+    image: image-name:tag
+    container_name: service-name
+    restart: unless-stopped  # Options: unless-stopped, always, on-failure
+    
+    # Port mappings (optional if using Caddy proxy)
+    # Format: "HOST_PORT:CONTAINER_PORT"
+    ports:
+      - "8080:8080"  # Remove if only accessing via Caddy
+    
+    # Volumes
+    volumes:
+      - ./data:/app/data  # Service-specific data
+      - ./config:/config   # Service-specific config
+      # - /opt/docker:/opt/docker  # If you need access to all docker projects
+    
+    # Global environment variables (loads from .env.global)
+    env_file:
+      - ../.env.global
+    
+    # Service-specific environment variables
+    environment:
+      - TZ=${TZ}  # Timezone (from .env.global)
+      # - PUID=${PUID}  # Only for LinuxServer.io images
+      # - PGID=${PGID}   # Only for LinuxServer.io images
+      # - APP_URL=https://service-name.${DOMAIN}  # If service needs to know its URL
+      # - TRUST_PROXY=true  # If service is behind reverse proxy
+    
+    # Alternative to PUID/PGID env vars (use one or the other)
+    # user: "${PUID}:${PGID}"
+    
+    # Healthcheck (optional, recommended for critical services)
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 40s
+    
+    # Caddy reverse proxy configuration
+    networks:
+      - caddy-proxy
+    labels:
+      caddy: service-name.${DOMAIN}  # Subdomain (from .env.global)
+      caddy.reverse_proxy: "{{upstreams 8080}}"  # Container port (not host port!)
+      caddy.tls: "${CADDY_CERT_PATH} ${CADDY_CERT_KEY_PATH}"  # TLS certs (from .env.global)
+
+networks:
+  caddy-proxy:
+    external: true
+
+# Optional: Named volumes (for data persistence)
+# volumes:
+#   service-data:
+
+
+# ============================================================================
+# SERVICE WITH VPN (Gluetun Pattern)
+# ============================================================================
+# Use this for services that need VPN routing (e.g., qBittorrent, Stremio)
+
+# name: service-name
+
+# services:
+#   gluetun:
+#     image: qmcgaw/gluetun
+#     container_name: service-name-gluetun
+#     cap_add:
+#       - NET_ADMIN
+#     devices:
+#       - /dev/net/tun:/dev/net/tun
+#     ports:
+#       - 8080:8080/tcp  # Service web UI port
+#       # - 6881:6881/tcp  # Additional ports if needed
+#       # - 6881:6881/udp
+#     volumes:
+#       - ./gluetun-data:/gluetun
+#     env_file:
+#       - ../.env.global
+#     environment:
+#       - VPN_SERVICE_PROVIDER=nordvpn  # or your VPN provider
+#       - VPN_TYPE=openvpn
+#       - OPENVPN_USER=${OPENVPN_USER}  # From .env.global
+#       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}  # From .env.global
+#       - SERVER_CITIES=${SERVER_CITIES}  # From .env.global
+#       - TZ=${TZ}
+#       - FIREWALL=on
+#       - FIREWALL_OUTBOUND_SUBNETS=100.64.0.0/10,172.28.0.0/16  # Adjust as needed
+#       - FIREWALL_INPUT_PORTS=8080  # Service ports
+#       - FIREWALL_VPN_INPUT_PORTS=8080
+#       - DNS_ADDRESS=127.0.0.1
+#       - DNS_NAMESERVERS=100.90.42.60  # Adjust as needed
+#     sysctls:
+#       - net.ipv6.conf.all.disable_ipv6=1
+#     restart: unless-stopped
+#     networks:
+#       - caddy-proxy
+#     labels:
+#       caddy: service-name.${DOMAIN}
+#       caddy.reverse_proxy: "{{upstreams 8080}}"
+#       caddy.tls: "${CADDY_CERT_PATH} ${CADDY_CERT_KEY_PATH}"
+# 
+#   service-name:
+#     image: service-image:tag
+#     container_name: service-name
+#     network_mode: service:gluetun  # Routes all traffic through VPN
+#     environment:
+#       - PUID=${PUID}  # If LinuxServer.io image
+#       - PGID=${PGID}  # If LinuxServer.io image
+#       - TZ=${TZ}
+#       # - WEBUI_PORT=8080  # If service needs to know its port
+#     volumes:
+#       - ./appdata:/config
+#       - ./downloads:/downloads
+#     restart: unless-stopped
+#     # Note: No networks or labels here - gluetun handles that
+# 
+# networks:
+#   caddy-proxy:
+#     external: true
+
+
+# ============================================================================
+# MULTI-SERVICE TEMPLATE (e.g., Immich, with database, redis, etc.)
+# ============================================================================
+# Use this for services with dependencies (database, cache, etc.)
+
+# name: service-name
+# 
+# services:
+#   service-name:
+#     container_name: service-name
+#     image: service-image:tag
+#     volumes:
+#       - ${UPLOAD_LOCATION}:/data  # Use env vars for paths
+#       - /etc/localtime:/etc/localtime:ro  # Sync timezone
+#     env_file:
+#       - .env  # Service-specific .env
+#       - ../.env.global  # Global .env
+#     ports:
+#       - '8080:8080'
+#     depends_on:
+#       - database
+#       - redis
+#     restart: always
+#     healthcheck:
+#       disable: false  # Or define custom healthcheck
+#     networks:
+#       - default
+#       - caddy-proxy
+#     labels:
+#       caddy: service-name.${DOMAIN}
+#       caddy.reverse_proxy: "{{upstreams 8080}}"
+#       caddy.tls: "${CADDY_CERT_PATH} ${CADDY_CERT_KEY_PATH}"
+# 
+#   database:
+#     container_name: service-name-db
+#     image: postgres:14  # or mariadb, etc.
+#     environment:
+#       POSTGRES_PASSWORD: ${DB_PASSWORD}
+#       POSTGRES_USER: ${DB_USERNAME}
+#       POSTGRES_DB: ${DB_DATABASE_NAME}
+#     volumes:
+#       - ${DB_DATA_LOCATION}:/var/lib/postgresql/data
+#     restart: always
+#     networks:
+#       - default
+#       - caddy-proxy
+# 
+#   redis:
+#     container_name: service-name-redis
+#     image: docker.io/valkey/valkey:8  # or redis:alpine
+#     healthcheck:
+#       test: redis-cli ping || exit 1
+#     restart: always
+#     networks:
+#       - default
+#       - caddy-proxy
+# 
+# networks:
+#   caddy-proxy:
+#     external: true
+# 
+# volumes:
+#   service-cache:  # Named volumes for cache/data
+
+
+# ============================================================================
+# SERVICE WITHOUT CADDY (Internal/No Reverse Proxy)
+# ============================================================================
+# Use this for services that don't need external access via Caddy
+
+# name: service-name
+# 
+# services:
+#   service-name:
+#     image: image-name:tag
+#     container_name: service-name
+#     restart: unless-stopped
+#     ports:
+#       - "8080:8080"  # Direct port access only
+#     volumes:
+#       - ./data:/app/data
+#     env_file:
+#       - ../.env.global
+#     environment:
+#       - TZ=${TZ}
+#       # No networks or labels needed
+
+
+# ============================================================================
+# COMMON PATTERNS REFERENCE
+# ============================================================================
+# 
+# RESTART POLICIES:
+#   - unless-stopped: Restart unless explicitly stopped (most common)
+#   - always: Always restart, even after manual stop
+#   - on-failure: Only restart on failure
+# 
+# VOLUME TYPES:
+#   - ./relative/path:/container/path  # Bind mount (relative to compose file)
+#   - /absolute/path:/container/path   # Bind mount (absolute path)
+#   - volume-name:/container/path      # Named volume (managed by Docker)
+# 
+# ENVIRONMENT VARIABLES:
+#   - TZ=${TZ}  # Always include timezone
+#   - PUID=${PUID} / PGID=${PGID}  # Only for LinuxServer.io images
+#   - user: "${PUID}:${PGID}"  # Alternative to PUID/PGID env vars
+# 
+# CADDY LABELS:
+#   - caddy: subdomain.${DOMAIN}  # Subdomain (from .env.global)
+#   - caddy.reverse_proxy: "{{upstreams CONTAINER_PORT}}"  # Container port, not host!
+#   - caddy.tls: "${CADDY_CERT_PATH} ${CADDY_CERT_KEY_PATH}"  # TLS certs
+# 
+# NETWORKS:
+#   - caddy-proxy: External network for reverse proxy (always external: true)
+#   - default: Internal network for multi-service communication
+# 
+# HEALTHCHECKS:
+#   - Recommended for critical services
+#   - Use service-specific health endpoints
+#   - Adjust intervals/timeouts based on service startup time
+# 
+# DEPENDENCIES:
+#   - depends_on: Ensures order but doesn't wait for health
+#   - depends_on with condition: service_healthy (waits for healthcheck)
+# 
+# ============================================================================
+

@@ -1,0 +1,65 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: stremio-gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8080:8080/tcp
+    volumes:
+      - ./gluetun-data:/gluetun
+    environment:
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_CITIES=${SERVER_CITIES}
+      - TZ=${TZ}
+      - UPDATER_PERIOD=24h
+      - FIREWALL=on
+      - FIREWALL_OUTBOUND_SUBNETS=100.64.0.0/10,172.28.0.0/16
+      - FIREWALL_INPUT_PORTS=8080
+      - FIREWALL_VPN_INPUT_PORTS=8080
+      # Fix MTU discovery error by setting a fixed MTU
+      - OPENVPN_MSSFIX=1368
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+    restart: unless-stopped
+    networks:
+      - default
+    # Memory limit: 256MB - Gluetun is lightweight
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 64M
+
+  stremio:
+    image: tsaridas/stremio-docker:latest
+    container_name: stremio
+    network_mode: service:gluetun
+    environment:
+      - NO_CORS=1
+      - SERVER_URL=https://stremio.${DOMAIN}/
+      - CASTING_DISABLED=1
+    volumes:
+      - ./stremio-data:/root/.stremio-server
+    restart: unless-stopped
+    # Memory limit: 1GB - Stremio can use significant RAM during transcoding
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 128M
+    # Ensure Gluetun is healthy before starting
+    depends_on:
+      gluetun:
+        condition: service_healthy
+
+networks:
+  default:
+    name: stremio_default

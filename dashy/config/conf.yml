@@ -1,0 +1,116 @@
+pageInfo:
+  title: My Dashboard
+  description: ''
+  navLinks:
+    - title: Documentation
+      path: https://dashy.to/docs
+      target: newtab
+appConfig:
+  theme: glow-dark
+  layout: horizontal
+  iconSize: medium
+sections:
+  - name: Media
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - title: Immich
+        icon: hl-immich
+        url: https://immich.homelab.home.arpa
+        id: 0_480_immich
+      - title: Stremio
+        icon: hl-stremio
+        url: https://stremio.homelab.home.arpa
+        id: 1_480_stremio
+      - title: Kavita
+        icon: hl-kavita
+        url: https://kavita.homelab.home.arpa
+        id: 2_480_kavita
+      - title: qBittorrent
+        icon: hl-qbittorrent
+        url: https://qbittorrent.homelab.home.arpa
+        id: 3_480_qbittorrent
+      - title: Mealie
+        icon: hl-mealie
+        url: https://mealie.homelab.home.arpa
+        id: 4_480_mealie
+      - title: AIO Streams
+        icon: sh-aiostreams
+        url: https://aiostreams.homelab.home.arpa
+        id: 5_480_aiostreams
+      - title: Actual Budget
+        icon: sh-actual-budget
+        url: https://actualbudget.homelab.home.arpa
+        id: 6_480_actualbudget
+  - name: Management & Monitoring
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - title: Arcane
+        icon: https://arcane.homelab.home.arpa/api/app-images/logo
+        url: https://arcane.homelab.home.arpa
+        id: 0_2185_arcane
+      - title: File Browser
+        icon: hl-filebrowser
+        url: https://filebrowser.homelab.home.arpa
+        id: 1_2185_filebrowser
+      - title: Home Assistant
+        icon: sh-home-assistant
+        url: https://ha.homelab.home.arpa
+        id: 2_2185_homeassistant
+  - name: Network
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - title: Pi-hole
+        icon: hl-pihole
+        url: https://pihole.homelab.home.arpa
+        id: 0_746_pihole
+      - title: Tailscale IDP
+        icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/tailscale-light.svg
+        url: https://idp.tail970719.ts.net
+        id: 1_746_tailscaleidp
+  - name: Music
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - title: SoulSync
+        icon: sh-soulsync
+        url: https://soulsync.homelab.home.arpa
+        id: 0_513_soulsync
+      - title: slskd
+        icon: sh-slskd
+        url: https://slskd.homelab.home.arpa
+        id: 1_513_slskd
+      - title: Navidrome
+        icon: sh-navidrome
+        url: https://navidrome.homelab.home.arpa
+        id: 2_513_navidrome
+  - name: AI
+    displayData:
+      sortBy: default
+      rows: 1
+      cols: 1
+      collapsed: false
+      hideForGuests: false
+    items:
+      - title: OpenClaw
+        icon: sh-openclaw
+        url: https://openclaw.homelab.home.arpa
+        id: 0_138_openclaw

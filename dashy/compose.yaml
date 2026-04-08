@@ -1,0 +1,16 @@
+name: dashy
+services:
+    dashy:
+        ports:
+            - 8091:8080
+        container_name: my-dashboard
+        restart: always
+        image: lissy93/dashy:latest
+        volumes:
+            - ./config/conf.yml:/app/user-data/conf.yml
+        env_file:
+          - ../.env.global
+
+networks:
+  default:
+    name: dashy_default

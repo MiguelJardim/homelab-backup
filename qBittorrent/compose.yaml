@@ -1,0 +1,50 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: qbittorrent-gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8083:8083/tcp  # qBittorrent web UI
+      - 6881:6881/tcp  # qBittorrent torrenting
+      - 6881:6881/udp  # qBittorrent torrenting UDP
+    volumes:
+      - ./gluetun-data:/gluetun
+    environment:
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_CITIES=${SERVER_CITIES}
+      - TZ=${TZ}
+      - UPDATER_PERIOD=24h
+      - FIREWALL=on
+      - FIREWALL_OUTBOUND_SUBNETS=100.64.0.0/10,172.28.0.0/16
+      - FIREWALL_INPUT_PORTS=8083,6881
+      - FIREWALL_VPN_INPUT_PORTS=8083,6881
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+    restart: unless-stopped
+    networks:
+      - default
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: service:gluetun
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8083
+      - TORRENTING_PORT=6881
+    volumes:
+      - ./appdata:/config
+      - ./downloads:/downloads
+    restart: unless-stopped
+
+networks:
+  default:
+    name: qbittorrent_default

@@ -1,0 +1,26 @@
+name: file-browser
+services:
+  filebrowser:
+    container_name: filebrowser
+    image: filebrowser/filebrowser:s6
+    volumes:
+      - ${HOME}:/srv/home
+      - /opt/docker:/srv/docker
+      - /opt/docker/caddy/conf/Caddyfile:/srv/Caddyfile
+
+      - ./config:/config
+      - ./database:/database
+    ports:
+      - 8081:80
+    env_file:
+      - ../.env.global
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - FB_NOAUTH=true
+    restart: unless-stopped
+
+networks:
+  default:
+    name: file-browser_default

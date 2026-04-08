@@ -1,0 +1,40 @@
+# Quick Start Template - Copy and customize for new services
+# This is a minimal template with the most common patterns
+
+name: my-service
+
+services:
+  my-service:
+    image: my-image:latest
+    container_name: my-service
+    restart: unless-stopped
+    
+    # Uncomment if you need direct port access (not just via Caddy)
+    # ports:
+    #   - "8080:8080"
+    
+    volumes:
+      - ./data:/app/data
+      - ./config:/config
+    
+    env_file:
+      - ../.env.global
+    
+    environment:
+      - TZ=${TZ}
+      # Uncomment if using LinuxServer.io image:
+      # - PUID=${PUID}
+      # - PGID=${PGID}
+    
+    networks:
+      - caddy-proxy
+    
+    labels:
+      caddy: my-service.${DOMAIN}
+      caddy.reverse_proxy: "{{upstreams 8080}}"  # Change 8080 to your container's port
+      caddy.tls: "${CADDY_CERT_PATH} ${CADDY_CERT_KEY_PATH}"
+
+networks:
+  caddy-proxy:
+    external: true
+
