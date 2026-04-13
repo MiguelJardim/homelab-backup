@@ -1,6 +1,8 @@
 *
 !/.gitignore
 !/README.md
+!/AGENTS.md
+!/CLAUDE.md
 !/.env.global.example
 
 !/0-templates/

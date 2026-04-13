@@ -5,23 +5,6 @@
     tls /etc/caddy/certs/homelab.home.arpa+1.pem /etc/caddy/certs/homelab.home.arpa+1-key.pem
 }
 
-# Tailscale forward auth (requires /run/tailscale.nginx-auth.sock mounted in Caddy).
-(tailscale_forward_auth) {
-    forward_auth unix//run/tailscale.nginx-auth.sock {
-        uri /auth
-        header_up Remote-Addr {remote_host}
-        header_up Remote-Port {remote_port}
-        header_up Original-URI {uri}
-        copy_headers {
-            Tailscale-User>X-Webauth-User
-            Tailscale-Name>X-Webauth-Name
-            Tailscale-Login>X-Webauth-Login
-            Tailscale-Tailnet>X-Webauth-Tailnet
-            Tailscale-Profile-Picture>X-Webauth-Profile-Picture
-        }
-    }
-}
-
 # --- Service Configurations ---
 
 # Immich
@@ -77,7 +60,6 @@ filebrowser.homelab.home.arpa {
 # Arcane
 arcane.homelab.home.arpa {
     import homelab_tls
-    import tailscale_forward_auth
     reverse_proxy host.docker.internal:3552
 }
 
@@ -132,11 +114,8 @@ ha.homelab.home.arpa {
     reverse_proxy host.docker.internal:8123
 }
 
-openclaw.homelab.home.arpa {
+opencode.homelab.home.arpa {
     import homelab_tls
-    reverse_proxy openclaw:18789 {
-        header_up Host {http.request.host}
-        header_up X-Forwarded-Proto https
-    }
+    reverse_proxy opencode:4096
 }
 
