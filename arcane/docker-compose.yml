@@ -11,14 +11,6 @@ services:
     env_file:
       - .env
       - ../.env.global
-    environment:
-      - APP_URL=${APP_URL}
-      - TRUST_PROXY=${TRUST_PROXY}
-      - PUBLIC_URL=${PUBLIC_URL}
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
-      - JWT_SECRET=${JWT_SECRET}
     restart: unless-stopped
 
 networks:

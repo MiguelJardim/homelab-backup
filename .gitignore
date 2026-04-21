@@ -17,6 +17,7 @@
 !/immich/
 !/kavita/
 !/mealie/
+!/gluetun/
 !/qBittorrent/
 !/spotify/
 !/stremio/
@@ -71,6 +72,9 @@ kavita/config/*
 
 !mealie/compose.yaml
 !mealie/.env.example
+
+!gluetun/compose.yaml
+!gluetun/.env.example
 
 !qBittorrent/compose.yaml
 !qBittorrent/.env.example
