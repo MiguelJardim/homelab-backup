@@ -26,26 +26,14 @@ sections:
         icon: hl-stremio
         url: https://stremio.homelab.home.arpa
         id: 1_480_stremio
-      - title: Kavita
-        icon: hl-kavita
-        url: https://kavita.homelab.home.arpa
-        id: 2_480_kavita
       - title: qBittorrent
         icon: hl-qbittorrent
         url: https://qbittorrent.homelab.home.arpa
         id: 3_480_qbittorrent
-      - title: Mealie
-        icon: hl-mealie
-        url: https://mealie.homelab.home.arpa
-        id: 4_480_mealie
       - title: AIO Streams
         icon: sh-aiostreams
         url: https://aiostreams.homelab.home.arpa
         id: 5_480_aiostreams
-      - title: Actual Budget
-        icon: sh-actual-budget
-        url: https://actualbudget.homelab.home.arpa
-        id: 6_480_actualbudget
   - name: Management & Monitoring
     displayData:
       sortBy: default
@@ -62,10 +50,6 @@ sections:
         icon: hl-filebrowser
         url: https://filebrowser.homelab.home.arpa
         id: 1_2185_filebrowser
-      - title: Home Assistant
-        icon: sh-home-assistant
-        url: https://ha.homelab.home.arpa
-        id: 2_2185_homeassistant
   - name: Network
     displayData:
       sortBy: default

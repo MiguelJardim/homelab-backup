@@ -45,12 +45,6 @@ qbittorrent.homelab.home.arpa {
     reverse_proxy host.docker.internal:8083
 }
 
-# Kavita
-kavita.homelab.home.arpa {
-    import homelab_tls
-    reverse_proxy host.docker.internal:5000
-}
-
 # File Browser
 filebrowser.homelab.home.arpa {
     import homelab_tls
@@ -69,23 +63,10 @@ cursor.homelab.home.arpa {
     reverse_proxy host.docker.internal:8050
 }
 
-# Mealie
-mealie.homelab.home.arpa {
-    import homelab_tls
-    reverse_proxy host.docker.internal:9925
-}
-
 # AIO Streams
 aiostreams.homelab.home.arpa {
     import homelab_tls
     reverse_proxy host.docker.internal:3001
-}
-
-# Actual Budget
-actualbudget.homelab.home.arpa {
-    import homelab_tls
-    encode gzip zstd
-    reverse_proxy host.docker.internal:5006
 }
 
 # Spotify Bundle
@@ -107,11 +88,6 @@ soulsync.homelab.home.arpa {
 soulsync-spotify.homelab.home.arpa {
     import homelab_tls
     reverse_proxy host.docker.internal:8888
-}
-
-ha.homelab.home.arpa {
-    import homelab_tls
-    reverse_proxy host.docker.internal:8123
 }
 
 opencode.homelab.home.arpa {

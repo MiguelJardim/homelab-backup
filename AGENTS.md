@@ -2,7 +2,7 @@
 
 ## Repository Purpose
 
-Docker Compose definitions and configuration for a homelab with 14 services. Config-only repo: no code, no builds.
+Docker Compose definitions and configuration for a homelab with 9 services. Config-only repo: no code, no builds.
 
 ## Quick Commands
 
@@ -23,7 +23,8 @@ cd <service> && docker compose down      # Stop service
 
 ## Environment Variables
 
-- **Global**: `/.env.global` — shared across all services (PUID, PGID, TZ, DOMAIN, VPN creds, TS_AUTHKEY)
+- **Global**: `/.env.global` — shared across all services (PUID, PGID, TZ, DOMAIN, TS_AUTHKEY)
+- **VPN shared**: `/.env.vpn` — shared VPN credentials/settings for VPN-routed services
 - **Per-service**: `<service>/.env` — service-specific secrets (never commit, use `.env.example` as template)
 
 ## Key Patterns
@@ -46,13 +47,13 @@ services:
         condition: service_healthy
 ```
 
-### Database Pattern (Immich, Mealie, Warracker)
+### Database Pattern (Immich)
 - Services depend on postgres with `condition: service_healthy`
 - Healthcheck: `["CMD", "pg_isready"]`
 
 ## Git Conventions
 
-- **Tracked**: compose files, `.env.example` templates, Caddyfile, select configs (Home Assistant YAML, Kavita templates/themes)
+- **Tracked**: compose files, `.env.example` templates, Caddyfile, selected service configs
 - **Ignored**: all `*.env`, logs, caches, databases (`*.db`, `*.sqlite*`), media libraries, downloads
 
 ## Important Notes

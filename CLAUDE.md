@@ -4,22 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repository tracks Docker Compose definitions, templates, and hand-edited configuration for a homelab deployment. It contains 12 services:
+This repository tracks Docker Compose definitions, templates, and hand-edited configuration for a homelab deployment. It currently contains 9 services:
 
-1. **Caddy** - Reverse proxy with Tailscale forward auth
+1. **Caddy** - Reverse proxy
 2. **qBittorrent** - Torrent client with Gluetun VPN
 3. **Stremio** - Media server with Gluetun VPN
 4. **Immich** - Self-hosted photo backup (multi-service: server, redis, postgres)
 5. **Dashy** - Dashboard homepage
-6. **Home Assistant** - Home automation
-7. **Spotify Bundle** - Slskd + Soulsync + Navidrome (multi-service)
-8. **Mealie** - Recipe manager with postgres
-9. **Actual Budget** - Budgeting app
-10. **Kavita** - E-book/comic reader
-11. **File Browser** - File manager
-12. **AIO Streams** - Anime streaming aggregator
-13. **Arcane** - Anime streaming service
-14. **Warracker** - Web asset scanner with postgres
+6. **Spotify Bundle** - Slskd + Soulsync + Navidrome (multi-service)
+7. **File Browser** - File manager
+8. **AIO Streams** - Anime streaming aggregator
+9. **Arcane** - Anime streaming service
 
 ## Repository Structure
 
@@ -45,8 +40,11 @@ All services load common environment variables from `/.env.global`:
 - `TZ` - Timezone (Europe/Lisbon)
 - `DOMAIN` - Domain name (homelab.home.arpa)
 - `CADD_CERT_PATH`, `CADD_CERT_KEY_PATH` - SSL cert paths
-- `OPENVPN_USER`, `OPENVPN_PASSWORD`, `SERVER_CITIES` - VPN credentials
 - `TS_AUTHKEY` - Tailscale auth key
+
+VPN-enabled services additionally load `/.env.vpn` for:
+- `VPN_SERVICE_PROVIDER`, `VPN_TYPE`
+- `OPENVPN_USER`, `OPENVPN_PASSWORD`, `SERVER_CITIES`
 
 Service-specific variables are loaded from `<service>/.env`.
 
@@ -58,7 +56,6 @@ The repository follows these ignore rules:
 - **Ignored**: Database files (`.db`, `.sqlite*`)
 - **Ignored**: Media libraries, uploads, downloads
 - **Tracked**: Service compose files, config files, `.env.example` templates
-- **Exception**: Home Assistant config files and Kavita config are tracked (see `.gitignore`)
 
 ## Common Development Tasks
 
@@ -135,7 +132,7 @@ services:
         condition: service_healthy
 ```
 
-### Database Pattern (Immich, Mealie, Warracker)
+### Database Pattern (Immich)
 ```yaml
 services:
   <service>:
