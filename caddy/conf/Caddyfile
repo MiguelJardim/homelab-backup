@@ -125,5 +125,7 @@ opencode.homelab.home.arpa {
 
 ollama.homelab.home.arpa {
     import homelab_tls
-    reverse_proxy 100.81.228.59:11435
+    reverse_proxy 100.81.228.59:11435 {
+        header_up Host {upstream_hostport}
+    }
 }
