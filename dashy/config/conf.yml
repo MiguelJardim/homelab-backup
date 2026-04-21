@@ -29,11 +29,11 @@ sections:
       - title: qBittorrent
         icon: hl-qbittorrent
         url: https://qbittorrent.homelab.home.arpa
-        id: 3_480_qbittorrent
+        id: 2_480_qbittorrent
       - title: AIO Streams
         icon: sh-aiostreams
         url: https://aiostreams.homelab.home.arpa
-        id: 5_480_aiostreams
+        id: 3_480_aiostreams
   - name: Management & Monitoring
     displayData:
       sortBy: default
@@ -93,8 +93,4 @@ sections:
       cols: 1
       collapsed: false
       hideForGuests: false
-    items:
-      - title: OpenClaw
-        icon: sh-openclaw
-        url: https://openclaw.homelab.home.arpa
-        id: 0_138_openclaw
+    items: []
