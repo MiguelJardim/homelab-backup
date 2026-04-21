@@ -4,6 +4,7 @@
 !/AGENTS.md
 !/CLAUDE.md
 !/.env.global.example
+!/.env.vpn.example
 
 !/0-templates/
 !/actualbudget/

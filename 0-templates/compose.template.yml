@@ -28,6 +28,7 @@ services:
     
     # Global environment variables (loads from .env.global)
     env_file:
+      - .env  # Service-specific .env
       - ../.env.global
     
     # Service-specific environment variables
@@ -88,6 +89,7 @@ networks:
 #     volumes:
 #       - ./gluetun-data:/gluetun
 #     env_file:
+#       - .env  # Service-specific .env
 #       - ../.env.global
 #     environment:
 #       - VPN_SERVICE_PROVIDER=nordvpn  # or your VPN provider
@@ -214,6 +216,7 @@ networks:
 #     volumes:
 #       - ./data:/app/data
 #     env_file:
+#       - .env  # Service-specific .env
 #       - ../.env.global
 #     environment:
 #       - TZ=${TZ}

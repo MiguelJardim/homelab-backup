@@ -9,6 +9,7 @@ services:
         volumes:
             - ./config/conf.yml:/app/user-data/conf.yml
         env_file:
+          - .env
           - ../.env.global
 
 networks:

@@ -1,27 +1,15 @@
 services:
   mealie:
-    image: ghcr.io/mealie-recipes/mealie:v3.9.2 # 
+    image: ghcr.io/mealie-recipes/mealie:v3.9.2
     container_name: mealie
     restart: always
     ports:
-        - "9925:9000" # 
-    deploy:
-      resources:
-        limits:
-          memory: 1000M # 
+      - "9925:9000"
+    env_file:
+      - .env
+      - ../.env.global
     volumes:
       - mealie-data:/app/data/
-    environment:
-      # Set Backend ENV Variables Here
-      ALLOW_SIGNUP: "false"
-      BASE_URL: https://mealie.homelab.home.arpa
-      # Database Settings
-      DB_ENGINE: postgres
-      POSTGRES_USER: mealie
-      POSTGRES_PASSWORD: mealie
-      POSTGRES_SERVER: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: mealie
     depends_on:
       postgres:
         condition: service_healthy
@@ -32,11 +20,11 @@ services:
     restart: always
     volumes:
       - mealie-pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+      - ../.env.global
     environment:
-      POSTGRES_PASSWORD: mealie
-      POSTGRES_USER: mealie
-      PGUSER: mealie
-      POSTGRES_DB: mealie
+      PGUSER: ${POSTGRES_USER}
     healthcheck:
       test: ["CMD", "pg_isready"]
       interval: 30s

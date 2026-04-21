@@ -12,6 +12,6 @@ services:
     privileged: true
     network_mode: host
     env_file:
+      - .env
       - ../.env.global
-    environment:
-      - TZ=${TZ}
+

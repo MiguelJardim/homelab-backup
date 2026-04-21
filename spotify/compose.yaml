@@ -1,13 +1,10 @@
-version: "3.8"
-
 services:
   slskd:
     image: slskd/slskd:latest
     container_name: slskd
-    environment:
-      - SLSKD_REMOTE_CONFIGURATION=true
-      - PUID=1000
-      - PGID=1000
+    env_file:
+       - ../.env.global
+       - .env
     ports:
       - "5030:5030"
       - "5031:5031"
@@ -20,38 +17,38 @@ services:
   soulsync:
     image: boulderbadgedad/soulsync:latest
     container_name: soulsync
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Lisbon
-      - SLSKD_URL=http://slskd:5030
-      - SLSKD_API_KEY=FRCFUDzyhTM8mpY8cVhJYsT2ZU7umCcNVzfEo2d0TnE=
+    env_file:
+       - ../.env.global
+       - .env
     ports:
       - "8008:8008"
     volumes:
       - ./volumes/soulsync/config:/app/config
       - ./volumes/soulsync/logs:/app/logs
       - ./volumes/soulsync/database:/app/data
-      - ./volumes/slskd/app/downloads:/app/downloads:rw # Must match Slskd's internal path
+      - ./volumes/slskd/app/downloads:/app/downloads:rw
       - ./volumes/soulsync/staging:/app/Staging
-      - ./volumes/music:/music:rw # SoulSync moves files TO here
-    depends_on: 
+      - ./volumes/music:/music:rw
+    depends_on:
       - slskd
     restart: unless-stopped
 
   navidrome:
     image: deluan/navidrome:latest
     container_name: navidrome
-    user: 1000:1000
+    user: "${PUID}:${PGID}"
+    env_file:
+       - ../.env.global
+       - .env
     ports:
       - "4533:4533"
     environment:
-      - ND_SCANSCHEDULE=1m
-      - ND_LOGLEVEL=info
-      - ND_MUSICFOLDER=/music
+      - ND_SCANSCHEDULE=${ND_SCANSCHEDULE}
+      - ND_LOGLEVEL=${ND_LOGLEVEL}
+      - ND_MUSICFOLDER=${ND_MUSICFOLDER}
     volumes:
       - ./volumes/navidrome:/data
-      - ./volumes/music:/music:ro # Navidrome reads FROM here
+      - ./volumes/music:/music:ro
     depends_on:
       - soulsync
     restart: unless-stopped

@@ -12,19 +12,23 @@ services:
       - 6881:6881/udp  # qBittorrent torrenting UDP
     volumes:
       - ./gluetun-data:/gluetun
+    env_file:
+      - .env
+      - ../.env.global
+      - ../.env.vpn
     environment:
-      - VPN_SERVICE_PROVIDER=nordvpn
-      - VPN_TYPE=openvpn
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - VPN_TYPE=${VPN_TYPE}
       - OPENVPN_USER=${OPENVPN_USER}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
       - SERVER_CITIES=${SERVER_CITIES}
       - TZ=${TZ}
-      - UPDATER_PERIOD=24h
-      - FIREWALL=on
-      - FIREWALL_OUTBOUND_SUBNETS=100.64.0.0/10,172.28.0.0/16
-      - FIREWALL_INPUT_PORTS=8083,6881
-      - FIREWALL_VPN_INPUT_PORTS=8083,6881
-      - OPENVPN_MSSFIX=1368
+      - UPDATER_PERIOD=${UPDATER_PERIOD}
+      - FIREWALL=${FIREWALL}
+      - FIREWALL_OUTBOUND_SUBNETS=${FIREWALL_OUTBOUND_SUBNETS}
+      - FIREWALL_INPUT_PORTS=${FIREWALL_INPUT_PORTS}
+      - FIREWALL_VPN_INPUT_PORTS=${FIREWALL_VPN_INPUT_PORTS}
+      - OPENVPN_MSSFIX=${OPENVPN_MSSFIX}
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
     restart: unless-stopped
@@ -41,12 +45,15 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     network_mode: service:gluetun
+    env_file:
+      - .env
+      - ../.env.global
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - WEBUI_PORT=8083
-      - TORRENTING_PORT=6881
+      - WEBUI_PORT=${WEBUI_PORT}
+      - TORRENTING_PORT=${TORRENTING_PORT}
     volumes:
       - ./appdata:/config
       - ./downloads:/downloads

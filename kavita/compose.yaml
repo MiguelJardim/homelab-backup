@@ -1,14 +1,13 @@
 services:
     kavita:
-        image: jvmilazz0/kavita:latest    # Using the stable branch from the official dockerhub repo.
+        image: jvmilazz0/kavita:latest
         container_name: kavita
         volumes:
             - /opt/docker/kavita/books:/kavita/books
-            - /opt/docker/kavita/config:/kavita/config     # /kavita/config must not be changed
+            - /opt/docker/kavita/config:/kavita/config
         env_file:
             - ../.env.global
-        environment:
-            - TZ=${TZ}
+            - .env
         ports:
             - "5000:5000"
         restart: unless-stopped

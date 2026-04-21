@@ -9,15 +9,16 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker
     env_file:
+      - .env
       - ../.env.global
     environment:
-      - APP_URL=https://arcane.${DOMAIN}
-      - TRUST_PROXY=true
-      - PUBLIC_URL=https://arcane.${DOMAIN}
+      - APP_URL=${APP_URL}
+      - TRUST_PROXY=${TRUST_PROXY}
+      - PUBLIC_URL=${PUBLIC_URL}
       - PUID=${PUID}
       - PGID=${PGID}
-      - ENCRYPTION_KEY=yN7z9hlKBRA2QjEFcSxZUjrR2LbRpWUNPcmMw1eopp8=
-      - JWT_SECRET=kz8WAntoyoGjo3s6TXlu9OdstkGFeg7cbrJSg2xiHbs=
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - JWT_SECRET=${JWT_SECRET}
     restart: unless-stopped
 
 networks:

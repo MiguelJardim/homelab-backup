@@ -14,11 +14,7 @@ services:
       - 8081:80
     env_file:
       - ../.env.global
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - FB_NOAUTH=true
+      - .env
     restart: unless-stopped
 
 networks:

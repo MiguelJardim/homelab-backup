@@ -116,6 +116,14 @@ ha.homelab.home.arpa {
 
 opencode.homelab.home.arpa {
     import homelab_tls
-    reverse_proxy opencode:4096
+    reverse_proxy 192.168.1.240:4096 {
+        # Optional: ensure headers pass through for the Web UI
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+    }
 }
 
+ollama.homelab.home.arpa {
+    import homelab_tls
+    reverse_proxy 100.81.228.59:11435
+}
